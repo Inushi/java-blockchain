@@ -3,13 +3,13 @@ import java.net.*;
 import java.util.*;
 
 public class Node {
-    private List<Node> peers;
+    private List<String> peersIPAddresses;
     private ServerSocket serverSocket;
-    private String ipAddress; // IP address of this node
+    private String ipAddress;
 
     public Node(String ipAddress, int port) {
         this.ipAddress = ipAddress;
-        peers = new ArrayList<>();
+        peersIPAddresses = new ArrayList<>();
         try {
             serverSocket = new ServerSocket(port);
             new Thread(this::acceptConnections).start();
@@ -18,13 +18,13 @@ public class Node {
         }
     }
 
-    public void joinNetwork(Node peer) {
-        peers.add(peer);
+    public void joinNetwork(String peerIPAddress) {
+        peersIPAddresses.add(peerIPAddress);
     }
 
     public void broadcastMessage(String message) {
-        for (Node peer : peers) {
-            sendMessage(peer, message);
+        for (String peerIPAddress : peersIPAddresses) {
+            sendMessage(peerIPAddress, message);
         }
     }
 
@@ -50,9 +50,9 @@ public class Node {
         }
     }
 
-    private void sendMessage(Node peer, String message) {
+    private void sendMessage(String peerIPAddress, String message) {
         try {
-            Socket socket = new Socket(peer.getIpAddress(), peer.getPort());
+            Socket socket = new Socket(peerIPAddress, getPort());
             PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
             out.println(message);
             socket.close();
