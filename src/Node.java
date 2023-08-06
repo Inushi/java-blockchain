@@ -3,12 +3,12 @@ import java.net.*;
 import java.util.*;
 
 public class Node {
-    private int nodeId;
     private List<Node> peers;
     private ServerSocket serverSocket;
+    private String ipAddress; // IP address of this node
 
-    public Node(int nodeId, int port) {
-        this.nodeId = nodeId;
+    public Node(String ipAddress, int port) {
+        this.ipAddress = ipAddress;
         peers = new ArrayList<>();
         try {
             serverSocket = new ServerSocket(port);
@@ -52,7 +52,7 @@ public class Node {
 
     private void sendMessage(Node peer, String message) {
         try {
-            Socket socket = new Socket(peer.getAddress(), peer.getPort());
+            Socket socket = new Socket(peer.getIpAddress(), peer.getPort());
             PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
             out.println(message);
             socket.close();
@@ -61,8 +61,8 @@ public class Node {
         }
     }
 
-    public String getAddress() {
-        return "localhost";
+    public String getIpAddress() {
+        return ipAddress;
     }
 
     public int getPort() {
